@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Hospital Monporto - Painel de Pacientes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #bbdefb);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0d47a1;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    header small {
+      display: block;
+      font-size: 14px;
+      margin-top: 5px;
+      color: #c5cae9;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #0d47a1;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      background: #0d47a1;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #1565c0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #e3f2fd;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <header>
+    Hospital Monporto
+    <small>Cuidando da sua saúde com excelência</small>
+  </header>
+
+  <div class="container">
+    <!-- Cadastro -->
+    <div class="card">
+      <h2>Cadastrar Paciente</h2>
+      <input type="text" id="pacienteInput" placeholder="Nome ou número de atendimento">
+      <button onclick="adicionarPaciente()">Cadastrar</button>
+      <ul id="listaPacientes"></ul>
+    </div>
+
+    <!-- Pesquisa -->
+    <div class="card">
+      <h2>Pesquisar Paciente</h2>
+      <input type="text" id="pesquisaInput" placeholder="Digite o nome ou número">
+      <button onclick="pesquisarPaciente()">Pesquisar</button>
+      <div id="resultadoPesquisa" class="result"></div>
+    </div>
+
+    <!-- Setores -->
+    <div class="card">
+      <h2>Pacientes - UTI</h2>
+      <ul id="uti"></ul>
+    </div>
+    <div class="card">
+      <h2>Últimas Altas</h2>
+      <ul id="altas"></ul>
+    </div>
+  </div>
+
+  <script>
+    let pacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
+
+    function salvar() {
+      localStorage.setItem("pacientes", JSON.stringify(pacientes));
+    }
+
+    function renderizarLista() {
+      const lista = document.getElementById("listaPacientes");
+      lista.innerHTML = "";
+      pacientes.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p;
+        lista.appendChild(li);
+      });
+    }
+
+    function adicionarPaciente() {
+      const input = document.getElementById("pacienteInput");
+      const nome = input.value.trim();
+      if(nome) {
+        pacientes.push(nome);
+        salvar();
+        renderizarLista();
+        input.value = "";
+      }
+    }
+
+    function pesquisarPaciente() {
+      const termo = document.getElementById("pesquisaInput").value.trim();
+      const resultado = document.getElementById("resultadoPesquisa");
+      if (pacientes.includes(termo)) {
+        resultado.textContent = "✅ Paciente encontrado!";
+        resultado.className = "result success";
+      } else {
+        resultado.textContent = "❌ Paciente não consta no sistema.";
+        resultado.className = "result error";
+      }
+    }
+
+    renderizarLista();
+  </script>
+</body>
+</html>
